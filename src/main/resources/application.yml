@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: sunshineBot
+
+bot:
+  token: ${BOT_TOKEN}
+  username: ${BOT_USERNAME}
+  creatorId: ${BOT_CREATOR_ID}
