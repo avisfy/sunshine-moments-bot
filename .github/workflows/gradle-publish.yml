@@ -35,8 +35,8 @@ jobs:
         java-version: '21'
         distribution: 'liberica'
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@ec92e829475ac0c2315ea8f9eced72db85bb337a # v3.0.0
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
 
     - name: Build with Gradle
       run: ./gradlew build
@@ -50,7 +50,7 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ github.repository_owner }}/$IMAGE_NAME:latest .
+        docker build -t $IMAGE_NAME:latest .
 
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
