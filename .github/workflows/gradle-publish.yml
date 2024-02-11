@@ -62,11 +62,11 @@ jobs:
         docker push $IMAGE_ID:$VERSION
 
     - name: "Run deploy on server"
-      uses: tiyee/action-ssh@v1.0.1
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
-        privateKey: ${{ secrets.SERVER_PASS }}
+        password: ${{ secrets.SERVER_PASS }}
         script: |
           sudo docker rm sunshine-moments-bot
           sudo docker run -p 8080:8080 -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} -e BOT_CREATOR_ID=${{ secrets.BOT_CREATOR_ID }} BOT_USERNAME=${{ secrets.BOT_USERNAME }} -name sunshine-moments-bot $IMAGE_ID:$VERSION
