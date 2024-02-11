@@ -16,6 +16,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  IMAGE_ID: ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+  VERSION: latest
 
 jobs:
   build:
@@ -41,7 +43,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build -x test
       
-    - name: Log into registry ${{ env.REGISTRY }}
+    - name: Log into registry
       uses: docker/login-action@v3
       with:
         registry: ${{ env.REGISTRY }}
@@ -56,8 +58,8 @@ jobs:
     # the publishing section of your build.gradle
     - name: Publish to GitHub Packages
       run: |
-        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
-        VERSION=latest
+        IMAGE_ID=$IMAGE_ID
+        VERSION=$VERSION
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
 
@@ -69,4 +71,4 @@ jobs:
         password: ${{ secrets.SERVER_PASS }}
         script: |
           sudo docker rm sunshine-moments-bot
-          sudo docker run -p 8080:8080 -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} -e BOT_CREATOR_ID=${{ secrets.BOT_CREATOR_ID }} BOT_USERNAME=${{ secrets.BOT_USERNAME }} -name sunshine-moments-bot $IMAGE_ID:$VERSION
+          sudo docker run -p 8080:8080 -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} -e BOT_CREATOR_ID=${{ secrets.BOT_CREATOR_ID }} BOT_USERNAME=${{ secrets.BOT_USERNAME }} -name sunshine-moments-bot ${{ env.IMAGE_ID }}:${{ env.VERSION }}
