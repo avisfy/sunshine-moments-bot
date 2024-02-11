@@ -58,8 +58,6 @@ jobs:
     # the publishing section of your build.gradle
     - name: Publish to GitHub Packages
       run: |
-        IMAGE_ID=$IMAGE_ID
-        VERSION=$VERSION
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
 
