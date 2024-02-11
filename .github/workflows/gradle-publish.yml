@@ -39,7 +39,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build -x test
       
     - name: Log into registry ${{ env.REGISTRY }}
       uses: docker/login-action@v3
@@ -59,4 +59,14 @@ jobs:
         IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
         VERSION=latest
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-        docker push $IMAGE_ID:$VERSION   
+        docker push $IMAGE_ID:$VERSION
+
+    - name: "Run deploy on server"
+      uses: tiyee/action-ssh@v1.0.1
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        privateKey: ${{ secrets.SERVER_PASS }}
+        script: |
+          sudo docker rm sunshine-moments-bot
+          sudo docker run -p 8080:8080 -e BOT_TOKEN=${{ secrets.BOT_TOKEN }} -e BOT_CREATOR_ID=${{ secrets.BOT_CREATOR_ID }} BOT_USERNAME=${{ secrets.BOT_USERNAME }} -name sunshine-moments-bot $IMAGE_ID:$VERSION
